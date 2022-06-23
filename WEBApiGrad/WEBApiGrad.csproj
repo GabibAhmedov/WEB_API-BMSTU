@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Views\Visualization\Draw.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="DBSCAN" Version="2.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
@@ -29,15 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Include="Views\Visualization\Draw.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Converters\Converters.csproj" />
     <ProjectReference Include="..\HttpClients\HttpClients.csproj" />
     <ProjectReference Include="..\ImmigrationDTOs\ImmigrationDTOs.csproj" />
     <ProjectReference Include="..\IntermediateModels\IntermediateModels.csproj" />
     <ProjectReference Include="..\WebMediator\WebMediator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\" />
   </ItemGroup>
 
 </Project>

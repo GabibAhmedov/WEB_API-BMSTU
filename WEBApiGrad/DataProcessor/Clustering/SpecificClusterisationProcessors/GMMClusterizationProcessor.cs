@@ -45,7 +45,6 @@ public class GMMClusterizationProcessor:ISpecificClusterizationProcessor
             clusterDTO.ClusterAlgorithm = "GMM";
             clusterDTO.Profiles = new List<ProfileInt>();
             clusterInts.Add(clusterDTO);
-
         }
 
         for (var j = 0; j < labels.Length; j++)
@@ -63,6 +62,7 @@ public class GMMClusterizationProcessor:ISpecificClusterizationProcessor
         {
             clusterInts[i].Profiles.AddRange(profileInts.Where(p => p.Clusters.FirstOrDefault(c => c.ClusterNumber == clusterInts[i].ClusterNumber
                 && c.ClusterAlgorithm == clusterInts[i].ClusterAlgorithm) != null));
+            clusterInts[i].ProfileCount = clusterInts[i].Profiles.Count();
         }
 
         return clusterInts;

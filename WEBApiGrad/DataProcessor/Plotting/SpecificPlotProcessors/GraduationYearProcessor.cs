@@ -12,6 +12,18 @@ namespace WEBApiGrad.DataProcessor
 {
     public class GraduationYearProcessor : ISpecificPlotProcessor
     {
+
+        public struct GraduationYear
+        {
+            public readonly int year;
+            public readonly int amount;
+            public GraduationYear( int iYear,int iAmount)
+            {
+                year = iYear;
+                amount = iAmount;
+            }
+        }
+
         public PlotInt PrepareSpecificPlotAsync(List<ProfileInt> profileDTOs, List<CityInt> cityDTOs)
         {
             var GraduationYear = new Dictionary<int, int>();
@@ -26,18 +38,12 @@ namespace WEBApiGrad.DataProcessor
                 })
                 .OrderBy(p => p.Count))
             {
-                var g = new GraduationYear() { year = (int)line.Name, amount = line.Count };
+                var g = new GraduationYear((int)line.Name, line.Count);
                 GraduationYear.Add((int)line.Name, line.Count);
                 gradYearList.Add(g);      
             }
             gradYearList = gradYearList.OrderBy(g => g.year).ToList();
             return new PlotInt() { Name = "GraduationYear", Data = JsonConvert.SerializeObject(gradYearList)};
         }
-    }
-
-    public class GraduationYear
-    {
-        public int year { get; set; }
-        public int amount { get; set; }
     }
 }

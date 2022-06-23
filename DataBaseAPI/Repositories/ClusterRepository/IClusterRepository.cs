@@ -9,6 +9,6 @@ namespace DataBaseAPI.Repositories
 {
     public interface IClusterRepository:IRepository,IDisposable
     {
-        Task<List<ClusterInt>> GetClustersAsync();
+         Task<List<ClusterInt>> GetClustersAsync();
     }
 }

@@ -44,11 +44,9 @@ namespace WEBApiGrad.Controllers
             try
             {
                 var clusterInts = await _webMediator.GetClustersAsync();
-                IActionResult altResult; 
                 if (clusterInts.Count == 0 || clusterInts[0].ProfileCount == 0)
                 {
-                    altResult = await RefreshClusterData();
-                    return altResult;
+                    return Ok( await RefreshClusterData());
                 }
 
                 return Ok(clusterInts.Select(p => ClusterConverter.ConvertToDTO(p)).ToList());

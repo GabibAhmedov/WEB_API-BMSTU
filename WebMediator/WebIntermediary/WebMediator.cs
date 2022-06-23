@@ -47,6 +47,17 @@ public class WebMediator : IWebMediator
         return clusterInts;
     }
 
+    public async Task<List<PlotDTO>> PostPlotsAsync(List<PlotInt> plotInts)
+    {
+        var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
+        var stringPlots = JsonConvert.SerializeObject(plotInts);
+        var content = new StringContent(stringPlots, Encoding.UTF8, "application/json");
+        var result = await _httpClient.PostAsync("plots", content, tokenSource.Token);
+        result.EnsureSuccessStatusCode();
+        var plotDTOs = plotInts.Select(p => PlotConverter.ConvertToDTO(p)).ToList();
+        return plotDTOs;
+    }
+
     public async Task<List<ClusterDTO>> PostClustersAsync(List<ClusterInt> clusterInts)
     {
         var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
@@ -67,4 +78,13 @@ public class WebMediator : IWebMediator
         return stringResult;
     }
 
+    public async Task<List<PlotInt>> GetPlotsAsync()
+    {
+        var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
+        var result = await _httpClient.GetAsync("plots");
+        var stringResult = await result.Content.ReadAsStringAsync();
+        var plotInts = JsonConvert.DeserializeObject<List<PlotInt>>(stringResult);
+        result.EnsureSuccessStatusCode();
+        return plotInts;
+    }
 }

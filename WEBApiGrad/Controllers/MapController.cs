@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using IntermediateModels;
 using Converters;
 using ImmigrationDTOs;
+using WEBApiGrad.WebMediator;
 
 namespace WEBApiGrad.Controllers;
 
@@ -24,11 +25,15 @@ public class MapController : Controller
 {
     private readonly HttpClient _httpClient;
     private readonly IDataProcessor<List<CityInt>> _dataProcessor;
+    private readonly IWebMediator _webMediator;
+
     public MapController(IHttpClientFactory clientFactory,
-        IDataProcessor<List<CityInt>> dataProcessor)
+        IDataProcessor<List<CityInt>> dataProcessor,
+        IWebMediator webMediator)
     {
         _httpClient = clientFactory.CreateClient("microserviceClient");
         _dataProcessor = dataProcessor;
+        _webMediator = webMediator;
 
     }
 
@@ -40,11 +45,8 @@ public class MapController : Controller
         {
             var cityInts = await _dataProcessor.PrepareDataAsync();
             if (cityInts.Count == 0)
-            {
-                await RefreshMapData();
-
-                return Ok(await _dataProcessor.PrepareDataAsync());
-
+            {            
+                return Ok( await RefreshMapData());
             }
             return Ok(cityInts.Select(p => CityConverter.ConvertToDTO(p)).ToList());
         }
@@ -60,12 +62,7 @@ public class MapController : Controller
     {
         try
         {
-            var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
-            // var content = JsonContent.Create(plotDTOs,List<PlotDTO>);
-
-
-            var result = await _httpClient.PutAsync("api/Seed", null);
-            result.EnsureSuccessStatusCode();
+            await _webMediator.PutProfilesAsync();
             return Ok((await _dataProcessor.PrepareDataAsync()).Select(p => CityConverter.ConvertToDTO(p)).ToList());
         }
         catch (Exception ex)

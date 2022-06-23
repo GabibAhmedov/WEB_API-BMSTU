@@ -12,6 +12,16 @@ namespace WEBApiGrad.DataProcessor
 {
     public class ImigrantsPerCityProcessor : ISpecificPlotProcessor
     {
+        private struct ImmigrantPerCity
+        {
+            public readonly string city; 
+            public readonly int amount;
+            public ImmigrantPerCity(string iCity,int iAmount)
+            {
+                city = iCity;
+                amount = iAmount;
+            }
+        }
 
         public PlotInt PrepareSpecificPlotAsync(List<ProfileInt> profileDTOs, List<CityInt> cityDTOs)
         {
@@ -26,19 +36,15 @@ namespace WEBApiGrad.DataProcessor
                 })
                 .OrderBy(p => p.Count))
             {
-                var g = new ImmigrantPerCity() { city = line.Name, amount = line.Count };
+                var IPC = new ImmigrantPerCity(line.Name, line.Count); 
                 ImmigrantsPerCity.Add(line.Name, line.Count);
-                ImmigrantsList.Add(g);
+                ImmigrantsList.Add(IPC);
 
             }
             ImmigrantsList = ImmigrantsList.OrderByDescending(i=>i.amount).ToList();
             return new PlotInt() { Name = "ImmigrantsPerCity", Data = JsonConvert.SerializeObject(ImmigrantsList) };
         }
     }
-    public class ImmigrantPerCity
-    {
-        public string city { get; set; }
-        public int amount { get; set; }
-    }
+
 }
 

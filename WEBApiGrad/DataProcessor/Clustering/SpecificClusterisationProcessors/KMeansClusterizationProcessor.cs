@@ -29,14 +29,6 @@ namespace WEBApiGrad.DataProcessor.Clustering
             int[] labels = clusters.Decide(observations);
             var clusterInts = new List<ClusterInt>();
 
-            //for (var j = 0; j < labels.Length; j++)
-            //{
-            //    c.ClusterNumber = labels[j];
-            //    profileInts[j].Clusters.Add(c);
-            //    profileInts[j].ClusterId = labels[j] + 1;
-            //}
-
-
             for (var i = 0; i < nClusters; i++)
             {
                 var clusterDTO = new ClusterInt();
@@ -62,6 +54,7 @@ namespace WEBApiGrad.DataProcessor.Clustering
             {
                 clusterInts[i].Profiles.AddRange(profileInts.Where(p => p.Clusters.FirstOrDefault(c => c.ClusterNumber == clusterInts[i].ClusterNumber 
                     && c.ClusterAlgorithm == clusterInts[i].ClusterAlgorithm) != null));
+                clusterInts[i].ProfileCount = clusterInts[i].Profiles.Count();
             }
 
             return clusterInts;

@@ -17,7 +17,7 @@ public class MeanShiftClusterizationProcessor : ISpecificClusterizationProcessor
         var meanShift = new MeanShift()
         {
             Kernel = new UniformKernel(),
-            Bandwidth = 12.0
+            Bandwidth = 10.0
         };
 
         var observations = new double[profileInts.Count][];
@@ -61,6 +61,7 @@ public class MeanShiftClusterizationProcessor : ISpecificClusterizationProcessor
         {
             clusterInts[i].Profiles.AddRange(profileInts.Where(p => p.Clusters.FirstOrDefault(c => c.ClusterNumber == clusterInts[i].ClusterNumber
                 && c.ClusterAlgorithm == clusterInts[i].ClusterAlgorithm) != null));
+            clusterInts[i].ProfileCount = clusterInts[i].Profiles.Count();
         }
 
         return clusterInts;

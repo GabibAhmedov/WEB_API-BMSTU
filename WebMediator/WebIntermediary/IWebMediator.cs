@@ -23,5 +23,9 @@ public interface IWebMediator
     public Task<List<ClusterDTO>> PostClustersAsync(List<ClusterInt> clusterInts);
 
     public Task<string> PutProfilesAsync();
+    public Task<List<PlotDTO>> PostPlotsAsync(List<PlotInt> PlotInt);
+
+    public Task<List<PlotInt>> GetPlotsAsync();
+
 }
 

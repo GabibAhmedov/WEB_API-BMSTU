@@ -63,9 +63,6 @@ public class Startup
         services.AddTransient<ISpecificClusterizationProcessor, GMMClusterizationProcessor>();
         services.AddTransient<ISpecificClusterizationProcessor, MeanShiftClusterizationProcessor>();
 
-        
-
-
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

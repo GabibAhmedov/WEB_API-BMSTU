@@ -30,9 +30,6 @@ namespace WEBApiGrad.Controllers
         {
             try
             {
-                //var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
-                //var result = await _httpClient.PutAsync("api/Seed",null, tokenSource.Token);
-                //result.EnsureSuccessStatusCode();
                 return Ok(await _webMediator.PutProfilesAsync());
             }
             catch (Exception ex)

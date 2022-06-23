@@ -8,23 +8,22 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using WEBApiGrad.HttpClients;
 using IntermediateModels;
+using WEBApiGrad.WebMediator;
 
 namespace WEBApiGrad.DataProcessor
 {
     public class CityDataProcessor:IDataProcessor<List<CityInt>>
     {
-        private readonly HttpClient _httpClient;
         private readonly ClientCategory _microserviceClientCategory = ClientCategory.MicroserviceClient;
-        public CityDataProcessor(IHttpClientFactory clientFactory)
+        private readonly IWebMediator _webMediator;
+        public CityDataProcessor(
+            IWebMediator webMediator)
         {
-            _httpClient = clientFactory.CreateClient(_microserviceClientCategory.Category);
+            _webMediator = webMediator;
         }
         public async Task<List<CityInt>> PrepareDataAsync()
         {
-            var citiesResult = await _httpClient.GetAsync("cities");
-
-
-            var cityInts = JsonConvert.DeserializeObject<List<CityInt>>(await citiesResult.Content.ReadAsStringAsync());
+            var cityInts = await _webMediator.GetCitiesAsync();
 
             cityInts = cityInts.Where(c => c.CountryName != "Россия").ToList();
 

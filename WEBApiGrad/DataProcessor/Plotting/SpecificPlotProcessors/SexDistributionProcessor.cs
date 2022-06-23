@@ -28,7 +28,7 @@ namespace WEBApiGrad.DataProcessor
             })
             .OrderBy(p => p.Count))
             {
-                SexDestribution.Add(line.Name == 1 ? "Male" : "Female", line.Count);
+                SexDestribution.Add(line.Name == 1 ? "Female" : "Male", line.Count);
             }
 
             return new PlotInt() { Name = "SexDestribution", Data = JsonConvert.SerializeObject(SexDestribution) };

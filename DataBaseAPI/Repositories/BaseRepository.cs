@@ -85,7 +85,6 @@ namespace DataBaseAPI.Repositories
                     Country = profile.Country,
                     CityId = profile.CityId,
                     City = profile.City is not null ? GetCityIntFromCity(profile.City) : null,
-                    //ClusterId = profile.ClusterId,
                 })
                 .ToList();
 
@@ -109,7 +108,6 @@ namespace DataBaseAPI.Repositories
                     CountryId = profile.CountryId,
                     Country = profile.Country,
                     CityId = profile.CityId,
-                   // ClusterId = profile.ClusterId,
                 })
                 .ToList();
         }

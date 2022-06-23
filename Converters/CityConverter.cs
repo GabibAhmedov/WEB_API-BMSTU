@@ -4,7 +4,7 @@ using ImmigrationDTOs;
 
 namespace Converters;
 
-    public class CityConverter
+public class CityConverter
 {
     public static CityDTO ConvertToDTO(CityInt city)
     {

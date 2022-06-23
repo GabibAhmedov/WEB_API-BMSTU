@@ -15,6 +15,7 @@ using System.Web.Http;
 using System.Net.Http.Headers;
 using IntermediateModels;
 using Converters;
+using WEBApiGrad.WebMediator;
 
 namespace WEBApiGrad.Controllers
 {
@@ -22,15 +23,14 @@ namespace WEBApiGrad.Controllers
     [ApiController]
     public class PlotController : Controller
     {
-
-        private readonly HttpClient _httpClient;
+        private readonly IWebMediator _webMediator;
         private readonly IDataProcessor<List<PlotInt>> _dataProcessor;
-        public PlotController(IHttpClientFactory clientFactory,
-            IDataProcessor<List<PlotInt>> dataProcessor)
+        public PlotController(
+            IDataProcessor<List<PlotInt>> dataProcessor,
+            IWebMediator webMediator)
         {
-            _httpClient = clientFactory.CreateClient("microserviceClient");
             _dataProcessor = dataProcessor;
-
+            _webMediator = webMediator;
         }
         [HttpPost]
         [Route("data")]
@@ -38,18 +38,11 @@ namespace WEBApiGrad.Controllers
         {
             try
             {
-                var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
-                var result = await _httpClient.GetAsync("plots");
-                var stringResult = await result.Content.ReadAsStringAsync();
-                var plotInts = JsonConvert.DeserializeObject<List<PlotInt>>(stringResult);
-                IActionResult altResult;
+                var plotInts = await _webMediator.GetPlotsAsync();
                 if (plotInts.Count == 0)
                 {
-                    altResult = await RefreshPlotData();
-                    return altResult;
+                    return Ok(await RefreshPlotData());
                 }
-                result.EnsureSuccessStatusCode();
-                var desResult = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync());
                 return Ok(plotInts.Select(p => PlotConverter.ConvertToDTO(p)).ToList());
             }
             catch (Exception ex)
@@ -63,20 +56,13 @@ namespace WEBApiGrad.Controllers
         {
             try
             {
-                var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
-                var result = await _httpClient.GetAsync("plots");
-                var stringResult = await result.Content.ReadAsStringAsync();
-                var plotInts = JsonConvert.DeserializeObject<List<PlotInt>>(stringResult);
+                var plotInts = await _webMediator.GetPlotsAsync();
                 plotInts = plotInts.Where(p => p.Name == "ImmigrantsPerCity").ToList();
-                IActionResult altResult;
                 if (plotInts.Count == 0)
                 {
-                    altResult = await RefreshPlotData();
-                    return altResult;
+                    return Ok(await RefreshPlotData());
                 }
-                result.EnsureSuccessStatusCode();
-                var desResult = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync());
-                return Ok(PlotConverter.ConvertToDTO(plotInts[0]));
+                return Ok(plotInts.Select(p => PlotConverter.ConvertToDTO(p)).ToList());
             }
             catch (Exception ex)
             {
@@ -89,20 +75,13 @@ namespace WEBApiGrad.Controllers
         {
             try
             {
-                var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
-                var result = await _httpClient.GetAsync("plots");
-                var stringResult = await result.Content.ReadAsStringAsync();
-                var plotInts = JsonConvert.DeserializeObject<List<PlotInt>>(stringResult);
+                var plotInts = await _webMediator.GetPlotsAsync();
                 plotInts = plotInts.Where(p => p.Name == "GraduationYear").ToList();
-                IActionResult altResult;
                 if (plotInts.Count == 0)
                 {
-                    altResult = await RefreshPlotData();
-                    return altResult;
+                    return Ok(await RefreshPlotData());
                 }
-                result.EnsureSuccessStatusCode();
-                var desResult = JsonConvert.DeserializeObject(await result.Content.ReadAsStringAsync());
-                return Ok(PlotConverter.ConvertToDTO(plotInts[0]));
+                return Ok(plotInts.Select(p => PlotConverter.ConvertToDTO(p)).ToList());
             }
             catch (Exception ex)
             {
@@ -117,12 +96,7 @@ namespace WEBApiGrad.Controllers
             try
             {
                 var plotInts = await _dataProcessor.PrepareDataAsync();
-                var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(500000));
-                var stringPlots = JsonConvert.SerializeObject(plotInts);
-                var content = new StringContent(stringPlots, Encoding.UTF8, "application/json");           
-                var result = await _httpClient.PostAsync("plots", content, tokenSource.Token);
-                result.EnsureSuccessStatusCode();
-                return Ok(plotInts.Select(p => PlotConverter.ConvertToDTO(p)).ToList());
+                return Ok(await _webMediator.PostPlotsAsync(plotInts));
             }
             catch (Exception ex)
             {
